@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.1"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.1">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppManager.Domain\AppManager.Domain.csproj"/>
+        <ProjectReference Include="..\AppManager.Infrastructure\AppManager.Infrastructure.csproj"/>
+        <ProjectReference Include="..\AppManager.Migrations.Postgresql\AppManager.Migrations.Postgresql.csproj"/>
+        <ProjectReference Include="..\AppManager.Migrations.SqlServer\AppManager.Migrations.SqlServer.csproj"/>
+    </ItemGroup>
+
+</Project>
