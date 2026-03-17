@@ -44,7 +44,7 @@ public class AppManagerController(ILogger<AppManagerController> logger, IAppMana
     [Tags("Users")]
     public IActionResult RegisterUser([FromBody] RegisterUserDto data)
     {
-        var result = service.RegisterUser(data.IdentityKey);
+        var result = service.RegisterUser(data.IdentityKey, data.Email);
         return Ok(result);
     }
 
@@ -169,21 +169,21 @@ public class AppManagerController(ILogger<AppManagerController> logger, IAppMana
         return Ok(result);
     }
 
-    [HttpPost("/api/roles")]
-    [Tags("Roles")]
-    public IActionResult AddRole([FromBody] AddRoleDto data)
-    {
-        var result = service.AddRole(Role.Create(data.Name, data.Description));
-        return Ok(result);
-    }
+    // [HttpPost("/api/roles")]
+    // [Tags("Roles")]
+    // public IActionResult AddRole([FromBody] AddRoleDto data)
+    // {
+    //     var result = service.AddRole(Role.Create(data.Name, data.Description));
+    //     return Ok(result);
+    // }
 
-    [HttpPut("/api/roles/roleId")]
-    [Tags("Roles")]
-    public IActionResult UpdateRole(int roleId, [FromBody] AddRoleDto data)
-    {
-        service.UpdateRole(Role.Create(data.Name, data.Description));
-        return Ok();
-    }
+    // [HttpPut("/api/roles/roleId")]
+    // [Tags("Roles")]
+    // public IActionResult UpdateRole(int roleId, [FromBody] AddRoleDto data)
+    // {
+    //     service.UpdateRole(Role.Create(data.Name, data.Description));
+    //     return Ok();
+    // }
 
     [HttpDelete("/api/roles/roleId")]
     [Tags("Roles")]
@@ -221,7 +221,7 @@ public class AppManagerController(ILogger<AppManagerController> logger, IAppMana
     
 }
 
-public record RegisterUserDto(string IdentityKey);
+public record RegisterUserDto(string IdentityKey, string Email);
 
 public record AddRoleDto(string Name, string Description);
 

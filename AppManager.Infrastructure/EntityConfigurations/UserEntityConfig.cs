@@ -16,6 +16,7 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.IdentityKey).IsRequired();
         builder.HasIndex(x => x.IdentityKey).IsUnique();
 
-        builder.HasOne(x => x.Role).WithMany(x => x.Users).HasForeignKey(x => x.RoleId);
+        builder.HasMany(x => x.Roles).WithMany(x => x.Users).UsingEntity<UserRole>();
+        builder.HasMany(x => x.Permissions).WithMany(x => x.Users).UsingEntity<UserPermission>();
     }
 }

@@ -15,66 +15,69 @@ public class AppManagerService : IAppManagerService
 
     public Dictionary<string, bool> GetUserPermissions(string userId)
     {
-        var permissions = new Dictionary<string, bool>();
-        var user = GetPermissionsFull(userId);
-
-        if (user == null) return permissions;
-
-        foreach (var rolePermissions in user.Role.Permissions)
-        {
-            var p = rolePermissions.Permission;
-            var key = $"{p.Feature.Key}:{p.Action}";
-
-            permissions[key] = true;
-        }
-
-        foreach (var userPermission in user.Permissions)
-        {
-            var p = userPermission.Permission;
-            var key = $"{p.Feature.Key}:{p.Action}";
-
-            permissions[key] = userPermission.IsActive;
-        }
-
-        return permissions;
+        throw new NotImplementedException();
+        
+        // var permissions = new Dictionary<string, bool>();
+        // var user = GetPermissionsFull(userId);
+        //
+        // if (user == null) return permissions;
+        //
+        // foreach (var rolePermissions in user.Role.Permissions)
+        // {
+        //     var p = rolePermissions.Permission;
+        //     var key = $"{p.Feature.Key}:{p.Action}";
+        //
+        //     permissions[key] = true;
+        // }
+        //
+        // foreach (var userPermission in user.Permissions)
+        // {
+        //     var p = userPermission.Permission;
+        //     var key = $"{p.Feature.Key}:{p.Action}";
+        //
+        //     permissions[key] = userPermission.IsActive;
+        // }
+        //
+        // return permissions;
     }
 
     public Dictionary<string, Feature> GetUserMenus(string userId)
     {
-        var permissions = new Dictionary<string, Feature>();
-        var user = GetPermissionsFull(userId, true);
-
-        if (user == null) return permissions;
-
-        foreach (var rolePermissions in user.Role.Permissions)
-        {
-            var p = rolePermissions.Permission;
-            var key = $"{p.Feature.Key}:{p.Action}";
-
-            permissions[key] = p.Feature;
-        }
-
-        foreach (var userPermission in user.Permissions)
-        {
-            var p = userPermission.Permission;
-            var key = $"{p.Feature.Key}:{p.Action}";
-
-            if (permissions.TryGetValue(key, out _))
-            {
-                if (!p.Feature.IsActive) permissions.Remove(key);
-            }
-            else
-            {
-                permissions[key] = p.Feature;
-            }
-        }
-
-        return permissions;
+        throw new NotImplementedException();
+        // var permissions = new Dictionary<string, Feature>();
+        // var user = GetPermissionsFull(userId, true);
+        //
+        // if (user == null) return permissions;
+        //
+        // foreach (var rolePermissions in user.Role.Permissions)
+        // {
+        //     var p = rolePermissions.Permission;
+        //     var key = $"{p.Feature.Key}:{p.Action}";
+        //
+        //     permissions[key] = p.Feature;
+        // }
+        //
+        // foreach (var userPermission in user.Permissions)
+        // {
+        //     var p = userPermission.Permission;
+        //     var key = $"{p.Feature.Key}:{p.Action}";
+        //
+        //     if (permissions.TryGetValue(key, out _))
+        //     {
+        //         if (!p.Feature.IsActive) permissions.Remove(key);
+        //     }
+        //     else
+        //     {
+        //         permissions[key] = p.Feature;
+        //     }
+        // }
+        //
+        // return permissions;
     }
-
-    public User RegisterUser(string identityKey)
+    
+    public User RegisterUser(string identityKey, string email)
     {
-        var user = User.Create(identityKey);
+        var user = User.Create(identityKey, email);
         _context.Users.Add(user);
         _context.SaveChanges();
         return user;
@@ -184,16 +187,18 @@ public class AppManagerService : IAppManagerService
 
     private User? GetPermissionsFull(string userId, bool isMenu = false)
     {
-        return _context.Users
-            .Include(x => x.Role)
-            .ThenInclude(x => x.Permissions
-                .Where(s => !isMenu || s.Permission.Feature.ShowInMenu == isMenu))
-            .ThenInclude(x => x.Permission)
-            .ThenInclude(x => x.Feature)
-            .Include(x => x.Permissions
-                .Where(s => !isMenu || s.Permission.Feature.ShowInMenu == isMenu))
-            .ThenInclude(x => x.Permission)
-            .ThenInclude(x => x.Feature)
-            .FirstOrDefault(x => x.IdentityKey == userId);
+        throw new NotImplementedException();
+        
+        // return _context.Users
+        //     .Include(x => x.Role)
+        //     .ThenInclude(x => x.Permissions
+        //         .Where(s => !isMenu || s.Permission.Feature.ShowInMenu == isMenu))
+        //     .ThenInclude(x => x.Permission)
+        //     .ThenInclude(x => x.Feature)
+        //     .Include(x => x.Permissions
+        //         .Where(s => !isMenu || s.Permission.Feature.ShowInMenu == isMenu))
+        //     .ThenInclude(x => x.Permission)
+        //     .ThenInclude(x => x.Feature)
+        //     .FirstOrDefault(x => x.IdentityKey == userId);
     }
 }
