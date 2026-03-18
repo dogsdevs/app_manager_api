@@ -6,8 +6,9 @@ public class Role
     public string Name { get; private set; }
     public string Description { get; private set; }
     public string GuardName { get; private set; }
-    public string TenantId { get; private set; }
+    public int TenantId { get; private set; }
 
+    public Tenant Tenant { get; private set; }
     public HashSet<RolePermission> Permissions { get; private set; } = [];
     public HashSet<User> Users { get; private set; } = [];
 
@@ -16,7 +17,7 @@ public class Role
     {
     }
 
-    public static Role Create(string roleName, string description, string guardName, string tenantId)
+    public static Role Create(string roleName, string description, string guardName, int tenantId)
     {
         ArgumentNullException.ThrowIfNull(roleName);
 

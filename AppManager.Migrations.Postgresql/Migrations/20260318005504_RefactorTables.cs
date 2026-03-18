@@ -72,13 +72,13 @@ namespace AppManager.Migrations.Postgresql.Migrations
                 nullable: false,
                 defaultValue: false);
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<int>(
                 name: "TenantId",
                 schema: "admin",
                 table: "Users",
-                type: "text",
+                type: "integer",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "ExpiresAt",
@@ -96,13 +96,13 @@ namespace AppManager.Migrations.Postgresql.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.AddColumn<string>(
+            migrationBuilder.AddColumn<int>(
                 name: "TenantId",
                 schema: "admin",
                 table: "Roles",
-                type: "text",
+                type: "integer",
                 nullable: false,
-                defaultValue: "");
+                defaultValue: 0);
 
             migrationBuilder.AddColumn<DateTime>(
                 name: "GrantedAt",
@@ -149,7 +149,30 @@ namespace AppManager.Migrations.Postgresql.Migrations
                 columns: new[] { "RoleId", "PermissionId" });
 
             migrationBuilder.CreateTable(
-                name: "UserRole",
+                name: "Tenants",
+                schema: "admin",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Slug = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tenants", x => x.Id);
+                });
+            
+            
+            migrationBuilder.Sql("""
+                                     INSERT INTO admin."Tenants" ("Id","Name","Slug")
+                                     VALUES (0, 'Default Tenant', 'default')
+                                     ON CONFLICT DO NOTHING;
+                                 """);
+
+
+            migrationBuilder.CreateTable(
+                name: "UserRoles",
                 schema: "admin",
                 columns: table => new
                 {
@@ -159,41 +182,147 @@ namespace AppManager.Migrations.Postgresql.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserRole", x => new { x.RoleId, x.UserId });
+                    table.PrimaryKey("PK_UserRoles", x => new { x.UserId, x.RoleId });
                     table.ForeignKey(
-                        name: "FK_UserRole_Roles_RoleId",
+                        name: "FK_UserRoles_Roles_RoleId",
                         column: x => x.RoleId,
                         principalSchema: "admin",
                         principalTable: "Roles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_UserRole_Users_UserId",
+                        name: "FK_UserRoles_Users_UserId",
                         column: x => x.UserId,
                         principalSchema: "admin",
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AuditLogs",
+                schema: "admin",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    Resource = table.Column<string>(type: "text", nullable: false),
+                    TenantId = table.Column<int>(type: "integer", nullable: false),
+                    Action = table.Column<string>(type: "text", nullable: false),
+                    IpAddress = table.Column<string>(type: "text", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    Changes = table.Column<string>(type: "text", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AuditLogs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AuditLogs_Tenants_TenantId",
+                        column: x => x.TenantId,
+                        principalSchema: "admin",
+                        principalTable: "Tenants",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_AuditLogs_Users_UserId",
+                        column: x => x.UserId,
+                        principalSchema: "admin",
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserRole_UserId",
+                name: "IX_Users_TenantId",
                 schema: "admin",
-                table: "UserRole",
+                table: "Users",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Roles_TenantId",
+                schema: "admin",
+                table: "Roles",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLogs_TenantId",
+                schema: "admin",
+                table: "AuditLogs",
+                column: "TenantId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AuditLogs_UserId",
+                schema: "admin",
+                table: "AuditLogs",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserRoles_RoleId",
+                schema: "admin",
+                table: "UserRoles",
+                column: "RoleId");
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Roles_Tenants_TenantId",
+                schema: "admin",
+                table: "Roles",
+                column: "TenantId",
+                principalSchema: "admin",
+                principalTable: "Tenants",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
+
+            migrationBuilder.AddForeignKey(
+                name: "FK_Users_Tenants_TenantId",
+                schema: "admin",
+                table: "Users",
+                column: "TenantId",
+                principalSchema: "admin",
+                principalTable: "Tenants",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropForeignKey(
+                name: "FK_Roles_Tenants_TenantId",
+                schema: "admin",
+                table: "Roles");
+
+            migrationBuilder.DropForeignKey(
+                name: "FK_Users_Tenants_TenantId",
+                schema: "admin",
+                table: "Users");
+
             migrationBuilder.DropTable(
-                name: "UserRole",
+                name: "AuditLogs",
                 schema: "admin");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles",
+                schema: "admin");
+
+            migrationBuilder.DropTable(
+                name: "Tenants",
+                schema: "admin");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Users_TenantId",
+                schema: "admin",
+                table: "Users");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_UserPermissions",
                 schema: "admin",
                 table: "UserPermissions");
+
+            migrationBuilder.DropIndex(
+                name: "IX_Roles_TenantId",
+                schema: "admin",
+                table: "Roles");
 
             migrationBuilder.DropPrimaryKey(
                 name: "PK_RolePermissions",

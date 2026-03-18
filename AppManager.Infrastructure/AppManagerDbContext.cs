@@ -24,4 +24,7 @@ public class AppManagerDbContext : DbContext
     public DbSet<Feature> Features { get; set; }
     public DbSet<RolePermission> RolePermissions { get; set; }
     public DbSet<UserPermission> UserPermissions { get; set; }
+    public DbSet<UserRole> UserRoles { get; set; }
+    public DbSet<AuditLog> AuditLogs { get; set; }
+    public DbSet<Tenant> Tenants { get; set; }
 }
