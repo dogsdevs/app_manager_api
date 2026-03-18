@@ -1,12 +1,13 @@
 <Solution>
     <Folder Name="/Docs/">
-        <File Path="Add-Migrations.ps1"/>
-        <File Path="README.md"/>
+        <File Path="Add-Migrations.ps1" />
+        <File Path="README.md" />
+        <File Path="Remove-Migrations.ps1" />
     </Folder>
-    <Project Path="AppManager.Api/AppManager.Api.csproj"/>
-    <Project Path="AppManager.Domain/AppManager.Domain.csproj"/>
-    <Project Path="AppManager.Infrastructure/AppManager.Infrastructure.csproj"/>
-    <Project Path="AppManager.Migrations.Postgresql/AppManager.Migrations.Postgresql.csproj"/>
-    <Project Path="AppManager.Migrations.SqlServer/AppManager.Migrations.SqlServer.csproj"/>
-    <Project Path="AppManager/AppManager.csproj"/>
+    <Project Path="AppManager.Api/AppManager.Api.csproj" />
+    <Project Path="AppManager.Domain/AppManager.Domain.csproj" />
+    <Project Path="AppManager.Infrastructure/AppManager.Infrastructure.csproj" />
+    <Project Path="AppManager.Migrations.Postgresql/AppManager.Migrations.Postgresql.csproj" />
+    <Project Path="AppManager.Migrations.SqlServer/AppManager.Migrations.SqlServer.csproj" />
+    <Project Path="AppManager/AppManager.csproj" />
 </Solution>

@@ -23,6 +23,48 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("AppManager.Domain.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Changes")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("IpAddress")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Resource")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("AuditLogs", "admin");
+                });
+
             modelBuilder.Entity("AppManager.Domain.Feature", b =>
                 {
                     b.Property<int>("Id")
@@ -87,8 +129,20 @@ namespace AppManager.Migrations.Postgresql.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)");
 
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("FeatureId")
                         .HasColumnType("integer");
+
+                    b.Property<string>("GuardName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -110,17 +164,44 @@ namespace AppManager.Migrations.Postgresql.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("character varying(150)");
 
+                    b.Property<string>("GuardName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)");
 
+                    b.Property<int>("TenantId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Roles", "admin");
                 });
 
             modelBuilder.Entity("AppManager.Domain.RolePermission", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("PermissionId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("GrantedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("RoleId", "PermissionId");
+
+                    b.HasIndex("PermissionId");
+
+                    b.ToTable("RolePermissions", "admin");
+                });
+
+            modelBuilder.Entity("AppManager.Domain.Tenant", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -128,19 +209,17 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("PermissionId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
 
-                    b.Property<int>("RoleId")
-                        .HasColumnType("integer");
+                    b.Property<string>("Slug")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PermissionId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("RolePermissions", "admin");
+                    b.ToTable("Tenants", "admin");
                 });
 
             modelBuilder.Entity("AppManager.Domain.User", b =>
@@ -154,11 +233,17 @@ namespace AppManager.Migrations.Postgresql.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
                     b.Property<string>("IdentityKey")
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("RoleId")
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("TenantId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -166,35 +251,67 @@ namespace AppManager.Migrations.Postgresql.Migrations
                     b.HasIndex("IdentityKey")
                         .IsUnique();
 
-                    b.HasIndex("RoleId");
+                    b.HasIndex("TenantId");
 
                     b.ToTable("Users", "admin");
                 });
 
             modelBuilder.Entity("AppManager.Domain.UserPermission", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
+                    b.Property<int>("UserId")
                         .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("boolean");
 
                     b.Property<int>("PermissionId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("timestamp with time zone");
 
-                    b.HasKey("Id");
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("UserId", "PermissionId");
 
                     b.HasIndex("PermissionId");
 
-                    b.HasIndex("UserId");
-
                     b.ToTable("UserPermissions", "admin");
+                });
+
+            modelBuilder.Entity("AppManager.Domain.UserRole", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("AssignedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles", "admin");
+                });
+
+            modelBuilder.Entity("AppManager.Domain.AuditLog", b =>
+                {
+                    b.HasOne("AppManager.Domain.Tenant", "Tenant")
+                        .WithMany("AuditLogs")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AppManager.Domain.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("AppManager.Domain.Feature", b =>
@@ -215,6 +332,17 @@ namespace AppManager.Migrations.Postgresql.Migrations
                         .IsRequired();
 
                     b.Navigation("Feature");
+                });
+
+            modelBuilder.Entity("AppManager.Domain.Role", b =>
+                {
+                    b.HasOne("AppManager.Domain.Tenant", "Tenant")
+                        .WithMany("Roles")
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("AppManager.Domain.RolePermission", b =>
@@ -238,23 +366,25 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
             modelBuilder.Entity("AppManager.Domain.User", b =>
                 {
-                    b.HasOne("AppManager.Domain.Role", "Role")
+                    b.HasOne("AppManager.Domain.Tenant", "Tenant")
                         .WithMany("Users")
-                        .HasForeignKey("RoleId");
+                        .HasForeignKey("TenantId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Role");
+                    b.Navigation("Tenant");
                 });
 
             modelBuilder.Entity("AppManager.Domain.UserPermission", b =>
                 {
                     b.HasOne("AppManager.Domain.Permission", "Permission")
-                        .WithMany("Users")
+                        .WithMany("Permissions")
                         .HasForeignKey("PermissionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("AppManager.Domain.User", "User")
-                        .WithMany("Permissions")
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -264,6 +394,21 @@ namespace AppManager.Migrations.Postgresql.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("AppManager.Domain.UserRole", b =>
+                {
+                    b.HasOne("AppManager.Domain.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("AppManager.Domain.User", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("AppManager.Domain.Feature", b =>
                 {
                     b.Navigation("Permissions");
@@ -271,21 +416,23 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
             modelBuilder.Entity("AppManager.Domain.Permission", b =>
                 {
-                    b.Navigation("Roles");
+                    b.Navigation("Permissions");
 
-                    b.Navigation("Users");
+                    b.Navigation("Roles");
                 });
 
             modelBuilder.Entity("AppManager.Domain.Role", b =>
                 {
                     b.Navigation("Permissions");
-
-                    b.Navigation("Users");
                 });
 
-            modelBuilder.Entity("AppManager.Domain.User", b =>
+            modelBuilder.Entity("AppManager.Domain.Tenant", b =>
                 {
-                    b.Navigation("Permissions");
+                    b.Navigation("AuditLogs");
+
+                    b.Navigation("Roles");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

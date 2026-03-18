@@ -9,16 +9,11 @@ public class UserPermissionEntityConfig : IEntityTypeConfiguration<UserPermissio
     public void Configure(EntityTypeBuilder<UserPermission> builder)
     {
         builder.ToTable("UserPermissions");
-
-        builder.Property(x => x.Id).ValueGeneratedOnAdd();
-
-        builder.HasOne(x => x.User)
-            .WithMany(x => x.Permissions)
-            .HasForeignKey(x => x.UserId)
-            .OnDelete(DeleteBehavior.Cascade);
-
+        
+        builder.HasKey(x => new { x.UserId, x.PermissionId });
+        
         builder.HasOne(x => x.Permission)
-            .WithMany(x => x.Users)
+            .WithMany(x => x.Permissions)
             .HasForeignKey(x => x.PermissionId)
             .OnDelete(DeleteBehavior.Cascade);
     }

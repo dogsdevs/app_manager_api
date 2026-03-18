@@ -7,7 +7,7 @@ public interface IAppManagerService
     Dictionary<string, Feature> GetUserMenus(string userId);
 
     // Users
-    User RegisterUser(string identityKey);
+    User RegisterUser(string identityKey, string email);
     void AddUserPermission(string identityKey, int featureId, string action);
 
 
