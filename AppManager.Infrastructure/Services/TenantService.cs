@@ -1,5 +1,7 @@
 using AppManager.Domain;
+using AppManager.Domain.Exceptions;
 using AppManager.Domain.Services;
+using AppManager.Infrastructure.Exceptions;
 using Microsoft.EntityFrameworkCore;
 
 namespace AppManager.Infrastructure.Services;
@@ -17,25 +19,65 @@ public class TenantService: ITenantService
     
     public void Create(Tenant entity)
     {
-        var exists = _tenants.Any(x => x.Name == entity.Name || x.Slug == entity.Slug);
-        if (exists)
+        try
         {
-            throw  new Exception($"Tenant with name {entity.Name} or slug {entity.Slug} already exists");
+            if (_tenants.Any(x => x.Name == entity.Name))
+            {
+                throw new DuplicateFieldException("name", "Ya existe un tenant con este nombre");
+            } 
+            
+            if (_tenants.Any(x => x.Slug == entity.Slug))
+            {
+                throw new DuplicateFieldException("slug", "Ya existe un tenant con este slug");
+            }
+
+            _tenants.Add(entity);
+            _context.SaveChanges();
         }
-        _tenants.Add(entity);
-        _context.SaveChanges();
+        catch (DbUpdateException ex) when (DbUniqueConstraintException.IsUniqueConstraintViolation(ex, out var conflictInfo))
+        {
+            var message = conflictInfo?.Field switch
+            {
+                nameof(Tenant.Name) => "Ya existe un tenant con este nombre.",
+                nameof(Tenant.Slug) => "Ya existe un tenant con este slug.",
+                _ => "Ya existe un registro con un valor duplicado."
+            };
+
+            throw new DuplicateFieldException(conflictInfo?.Field ?? "Unknown", message);
+
+        }
     }
 
     public void Update(Tenant entity)
     {
-        var exists = _tenants.Any(x => x.Name == entity.Name || x.Slug == entity.Slug);
-        if (exists)
+        try
         {
-            throw  new Exception($"Tenant with name {entity.Name} or slug {entity.Slug} already exists");
+            if (_tenants.Where(x => x.Id != entity.Id)
+                .Any(x => x.Name == entity.Name))
+            {
+                throw new DuplicateFieldException("name", "Ya existe un tenant con este nombre");
+            } 
+            
+            if (_tenants.Where(x => x.Id != entity.Id)
+                .Any(x => x.Slug == entity.Slug))
+            {
+                throw new DuplicateFieldException("slug", "Ya existe un tenant con este slug");
+            }
+            
+            _tenants.Update(entity);
+            _context.SaveChanges();
         }
-        
-        _tenants.Update(entity);
-        _context.SaveChanges();
+       catch (DbUpdateException ex) when (DbUniqueConstraintException.IsUniqueConstraintViolation(ex, out var conflictInfo))
+        {
+            var message = conflictInfo?.Field switch
+            {
+                nameof(Tenant.Name) => "Ya existe un tenant con este nombre.",
+                nameof(Tenant.Slug) => "Ya existe un tenant con este slug.",
+                _ => "Ya existe un registro con un valor duplicado."
+            };
+
+            throw new DuplicateFieldException(conflictInfo?.Field ?? "Unknown", message);
+        }
     }
 
     public void Delete(Tenant entity)

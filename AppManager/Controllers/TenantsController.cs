@@ -1,4 +1,5 @@
 using AppManager.Domain;
+using AppManager.Domain.Exceptions;
 using AppManager.Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -59,12 +60,16 @@ public class TenantsController(ILogger<AppManagerController> logger, ITenantServ
             {
                 return NotFound();
             }
-            
+
             currentTenant.Update(dtoRequest.Name, dtoRequest.Slug);
-            
+
             service.Update(currentTenant);
-            
+
             return Ok(new TenantDto(currentTenant.Id, currentTenant.Name, currentTenant.Slug));
+        }
+        catch (DuplicateFieldException ex)
+        {
+            return Conflict(new {ex.Field ,ex.Message});
         }
         catch (Exception e)
         {

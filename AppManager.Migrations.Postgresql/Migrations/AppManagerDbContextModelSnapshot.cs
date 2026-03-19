@@ -219,6 +219,12 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.HasIndex("Slug")
+                        .IsUnique();
+
                     b.ToTable("Tenants", "admin");
                 });
 

@@ -11,6 +11,9 @@ public class TenantEntityConfig : IEntityTypeConfiguration<Tenant>
         builder.ToTable("Tenants");
         
         builder.HasKey(x => x.Id);
+
+        builder.HasIndex(x => x.Name).IsUnique();
+        builder.HasIndex(x => x.Slug).IsUnique();
         
         builder.HasMany(x => x.Users).WithOne(x => x.Tenant).HasForeignKey(x => x.TenantId);
         builder.HasMany(x => x.Roles).WithOne(x => x.Tenant).HasForeignKey(x => x.TenantId);
