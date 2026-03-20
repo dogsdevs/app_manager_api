@@ -11,6 +11,15 @@ builder.AddAppManager();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CorsPolicy", x =>
+    {
+        x.AllowAnyOrigin();
+        x.AllowAnyMethod();
+        x.AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
@@ -23,6 +32,8 @@ app.UseSwaggerUI(options =>
 });
 
 app.ApplyDbMigrations();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthorization();
 
