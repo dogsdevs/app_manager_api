@@ -17,6 +17,12 @@ public class Role
     {
     }
 
+
+    public Role(int id)
+    {
+        Id = id;
+    }
+
     public static Role Create(string roleName, string description, string guardName, int tenantId)
     {
         ArgumentNullException.ThrowIfNull(roleName);
@@ -25,9 +31,18 @@ public class Role
         {
             Name = roleName,
             Description = description,
-            GuardName = guardName,  
+            GuardName = guardName,
             TenantId = tenantId,
         };
+    }
+
+    public void Update(int id, string roleName, string description, string guardName, int tenantId)
+    {
+        Id = id;
+        Name = roleName;
+        Description = description;
+        GuardName = guardName;
+        TenantId = tenantId;
     }
 
     public void AddPermission(Permission permission)

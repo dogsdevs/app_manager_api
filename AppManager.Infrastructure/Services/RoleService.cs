@@ -23,12 +23,18 @@ public class RoleService : IRoleService
 
     public void Update(Role entity)
     {
+        var role = GetById(entity.Id);
+        if (role == null) return;
+        
         _roles.Update(entity);
         _context.SaveChanges();
     }
 
     public void Delete(Role entity)
     {
+        var role = GetById(entity.Id);
+        if (role == null) return;
+        
         _roles.Remove(entity);
         _context.SaveChanges();
     }
@@ -43,8 +49,9 @@ public class RoleService : IRoleService
         var roles = _roles
             .Where(x =>
                 string.IsNullOrWhiteSpace(query)
-                || EF.Functions.Like(x.Name, $"%{query}%")
+                || EF.Functions.Like(x.Name.ToUpper(), $"%{query.ToUpper()}%")
             );
         return roles;
     }
+    
 }

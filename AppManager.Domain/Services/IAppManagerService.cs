@@ -10,15 +10,6 @@ public interface IAppManagerService
     User RegisterUser(string identityKey, string email);
     void AddUserPermission(string identityKey, int featureId, string action);
 
-
-    //Roles
-    Role AddRole(Role role);
-    void UpdateRole(Role entity);
-    void DeleteRole(int roleId);
-    Role? GetRoleById(int id);
-    IEnumerable<Role> GetRoles(string query);
-
-
     // Features
     Feature AddFeature(Feature feature);
 

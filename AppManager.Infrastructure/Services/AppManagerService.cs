@@ -143,47 +143,7 @@ public class AppManagerService : IAppManagerService
         return menus;
     }
 
-    // Roles
-    public Role AddRole(Role role)
-    {
-        _context.Roles.Add(role);
-        _context.SaveChanges();
-        return role;
-    }
 
-    public void UpdateRole(Role entity)
-    {
-        var role = GetRoleById(entity.Id);
-        if (role == null) return;
-
-        _context.Roles.Update(role);
-        _context.SaveChanges();
-    }
-
-    public void DeleteRole(int roleId)
-    {
-        var role = GetRoleById(roleId);
-        if (role == null) return;
-
-        _context.Roles.Remove(role);
-        _context.SaveChanges();
-    }
-
-    public Role? GetRoleById(int id)
-    {
-        return _context.Roles.FirstOrDefault(x => x.Id == id);
-    }
-
-
-    public IEnumerable<Role> GetRoles(string query)
-    {
-        var roles = _context.Roles
-            .Where(x =>
-                string.IsNullOrWhiteSpace(query)
-                || EF.Functions.Like(x.Name, $"%{query}%")
-            );
-        return roles;
-    }
 
     private User? GetPermissionsFull(string userId, bool isMenu = false)
     {

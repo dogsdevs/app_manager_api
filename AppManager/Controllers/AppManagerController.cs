@@ -151,79 +151,10 @@ public class AppManagerController(ILogger<AppManagerController> logger, IAppMana
 
     #endregion
 
-    #region Roles
-    
-    [HttpGet("/api/roles")]
-    [Tags("Roles")]
-    public IActionResult GetRoles([FromQuery] string query = "")
-    {
-        var result = service.GetRoles(query);
-        return Ok(result);
-    }
-
-    [HttpGet("/api/roles/{roleId}")]
-    [Tags("Roles")]
-    public IActionResult GetRoleById(int roleId)
-    {
-        var result = service.GetRoleById(roleId);
-        return Ok(result);
-    }
-
-    // [HttpPost("/api/roles")]
-    // [Tags("Roles")]
-    // public IActionResult AddRole([FromBody] AddRoleDto data)
-    // {
-    //     var result = service.AddRole(Role.Create(data.Name, data.Description));
-    //     return Ok(result);
-    // }
-
-    // [HttpPut("/api/roles/roleId")]
-    // [Tags("Roles")]
-    // public IActionResult UpdateRole(int roleId, [FromBody] AddRoleDto data)
-    // {
-    //     service.UpdateRole(Role.Create(data.Name, data.Description));
-    //     return Ok();
-    // }
-
-    [HttpDelete("/api/roles/roleId")]
-    [Tags("Roles")]
-    public IActionResult UpdateRole(int roleId)
-    {
-        service.DeleteRole(roleId);
-        return Ok();
-    }
-    
-    
-    [HttpGet("/api/roles/{roleId}/permissions")]
-    [Tags("Roles")]
-    public IActionResult GetRolePermissions(int roleId)
-    {
-        throw new NotImplementedException();
-    }
-    
-    [HttpPost("/api/roles/{roleId}/permissions")]
-    [Tags("Roles")]
-    public IActionResult AddRolePermissions(int roleId, [FromBody] AddPermissionDto  data)
-    {
-        throw new NotImplementedException();
-    }
-    
-    [HttpDelete("/api/roles/{roleId}/permissions/{permissionId}")]
-    [Tags("Roles")]
-    public IActionResult AddRolePermissions(int roleId, int permissionId)
-    {
-        throw new NotImplementedException();
-    }
-    
-    #endregion
-    
-    
     
 }
 
 public record RegisterUserDto(string IdentityKey, string Email);
-
-public record AddRoleDto(string Name, string Description);
 
 public record AddPermissionDto(int FeatureId, string Action);
 
