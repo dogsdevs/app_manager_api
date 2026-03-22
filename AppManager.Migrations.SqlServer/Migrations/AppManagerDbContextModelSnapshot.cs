@@ -213,6 +213,12 @@ namespace AppManager.Migrations.SqlServer.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("NormalizedNameAndSlug")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("nvarchar(450)")
+                        .HasComputedColumnSql("UPPER(COALESCE([Name], '') + ' ' + COALESCE([Slug], ''))", true);
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -221,6 +227,8 @@ namespace AppManager.Migrations.SqlServer.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("NormalizedNameAndSlug");
 
                     b.HasIndex("Slug")
                         .IsUnique();

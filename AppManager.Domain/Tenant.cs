@@ -13,6 +13,8 @@ public class Tenant
     public int Id { get; set; }
     public string Name { get; set; }
     public string Slug { get; set; }
+    
+    public string NormalizedNameAndSlug { get; private set; }
 
     public static Tenant Create(string Name, string Slug)
     {

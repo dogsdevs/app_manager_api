@@ -14,6 +14,8 @@ public class TenantEntityConfig : IEntityTypeConfiguration<Tenant>
 
         builder.HasIndex(x => x.Name).IsUnique();
         builder.HasIndex(x => x.Slug).IsUnique();
+
+        builder.HasIndex(x => x.NormalizedNameAndSlug);
         
         builder.HasMany(x => x.Users).WithOne(x => x.Tenant).HasForeignKey(x => x.TenantId);
         builder.HasMany(x => x.Roles).WithOne(x => x.Tenant).HasForeignKey(x => x.TenantId);

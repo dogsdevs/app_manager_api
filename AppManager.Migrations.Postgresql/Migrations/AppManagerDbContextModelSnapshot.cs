@@ -213,6 +213,12 @@ namespace AppManager.Migrations.Postgresql.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("NormalizedNameAndSlug")
+                        .IsRequired()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("text")
+                        .HasComputedColumnSql("upper(coalesce(\"Name\", '') || ' ' || coalesce(\"Slug\", ''))", true);
+
                     b.Property<string>("Slug")
                         .IsRequired()
                         .HasColumnType("text");
@@ -221,6 +227,8 @@ namespace AppManager.Migrations.Postgresql.Migrations
 
                     b.HasIndex("Name")
                         .IsUnique();
+
+                    b.HasIndex("NormalizedNameAndSlug");
 
                     b.HasIndex("Slug")
                         .IsUnique();

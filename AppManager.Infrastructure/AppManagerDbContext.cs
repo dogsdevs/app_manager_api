@@ -16,6 +16,27 @@ public class AppManagerDbContext : DbContext
         base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("admin");
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+        
+        
+        var provider = Database.ProviderName; 
+
+        if (provider == "Microsoft.EntityFrameworkCore.SqlServer")
+        {
+            modelBuilder.Entity<Tenant>()
+                .Property(x => x.NormalizedNameAndSlug)
+                .HasComputedColumnSql(
+                    "UPPER(COALESCE([Name], '') + ' ' + COALESCE([Slug], ''))",
+                    stored: true);
+        }
+        else if (provider == "Npgsql.EntityFrameworkCore.PostgreSQL")
+        {
+            modelBuilder.Entity<Tenant>()
+                .Property(x => x.NormalizedNameAndSlug)
+                .HasComputedColumnSql(
+                    "upper(coalesce(\"Name\", '') || ' ' || coalesce(\"Slug\", ''))",
+                    stored: true);
+        }
+
     }
 
     public DbSet<User> Users { get; set; }

@@ -96,8 +96,7 @@ public class TenantService: ITenantService
         var tenants = _tenants
             .Where(x =>
                 string.IsNullOrWhiteSpace(query)
-                || EF.Functions.Like(x.Name, $"%{query}%")
-                || EF.Functions.Like(x.Slug, $"%{query}%")
+                || EF.Functions.Like(x.NormalizedNameAndSlug, $"%{query.ToUpper()}%")
             );
         return tenants;
     }
