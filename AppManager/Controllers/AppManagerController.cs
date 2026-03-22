@@ -16,61 +16,61 @@ public class AppManagerController(ILogger<AppManagerController> logger, IAppMana
     
 
     #region Users
-    [HttpGet("/api/users/{identityKey}/permissions")]
-    [Tags("Users")]
-    public IActionResult GetPermissions(string identityKey)
-    {
-        var data = service.GetUserPermissions(identityKey);
-        return Ok(data);
-    }
+    // [HttpGet("/api/users/{identityKey}/permissions")]
+    // [Tags("Users")]
+    // public IActionResult GetPermissions(string identityKey)
+    // {
+    //     var data = service.GetUserPermissions(identityKey);
+    //     return Ok(data);
+    // }
+    //
+    // [HttpGet("/api/users/{identityKey}/menus")]
+    // [Tags("Users")]
+    // public IActionResult GetMenu(string identityKey)
+    // {
+    //     var data = service.GetUserMenus(identityKey);
+    //     return Ok(data);
+    // }
+    //
+    // [HttpGet("/api/users/{identityKey}/menus/parents/")]
+    // [Tags("Users")]
+    // public IActionResult GetParentMenus([FromQuery] string identityKey)
+    // {
+    //     var menus = service.GetParentMenus(identityKey);
+    //     return Ok(menus);
+    // }
 
-    [HttpGet("/api/users/{identityKey}/menus")]
-    [Tags("Users")]
-    public IActionResult GetMenu(string identityKey)
-    {
-        var data = service.GetUserMenus(identityKey);
-        return Ok(data);
-    }
-    
-    [HttpGet("/api/users/{identityKey}/menus/parents/")]
-    [Tags("Users")]
-    public IActionResult GetParentMenus([FromQuery] string identityKey)
-    {
-        var menus = service.GetParentMenus(identityKey);
-        return Ok(menus);
-    }
-
-    [HttpPost("/api/users")]
-    [Tags("Users")]
-    public IActionResult RegisterUser([FromBody] RegisterUserDto data)
-    {
-        var result = service.RegisterUser(data.IdentityKey, data.Email);
-        return Ok(result);
-    }
+    // [HttpPost("/api/users")]
+    // [Tags("Users")]
+    // public IActionResult RegisterUser([FromBody] RegisterUserDto data)
+    // {
+    //     var result = service.RegisterUser(data.IdentityKey, data.Email);
+    //     return Ok(result);
+    // }
 
 
-    [HttpPost("/api/users/{identityKey}/permissions")]
-    [Tags("Users")]
-    public IActionResult AddUserPermission(string identityKey, [FromBody] AddPermissionDto data)
-    {
-        service.AddUserPermission(identityKey, data.FeatureId, data.Action);
-        return Ok();
-    }
+    // [HttpPost("/api/users/{identityKey}/permissions")]
+    // [Tags("Users")]
+    // public IActionResult AddUserPermission(string identityKey, [FromBody] AddPermissionDto data)
+    // {
+    //     service.AddUserPermission(identityKey, data.FeatureId, data.Action);
+    //     return Ok();
+    // }
+    //
     
-    
-    [HttpPut("/api/users/{identityKey}/permissions/{permissionId}")]
-    [Tags("Users")]
-    public IActionResult UpdateUserPermissions(int identityKey, int permissionId)
-    {
-        throw new NotImplementedException();
-    }
-    
-    [HttpDelete("/api/users/{identityKey}/permissions/{permissionId}")]
-    [Tags("Users")]
-    public IActionResult AddUserPermissions(int identityKey, int permissionId)
-    {
-        throw new NotImplementedException();
-    }
+    // [HttpPut("/api/users/{identityKey}/permissions/{permissionId}")]
+    // [Tags("Users")]
+    // public IActionResult UpdateUserPermissions(int identityKey, int permissionId)
+    // {
+    //     throw new NotImplementedException();
+    // }
+    //
+    // [HttpDelete("/api/users/{identityKey}/permissions/{permissionId}")]
+    // [Tags("Users")]
+    // public IActionResult AddUserPermissions(int identityKey, int permissionId)
+    // {
+    //     throw new NotImplementedException();
+    // }
     #endregion
 
     #region Features

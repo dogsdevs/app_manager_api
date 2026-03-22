@@ -28,4 +28,23 @@ public class User
             CreatedAt = DateTime.UtcNow
         };
     }
+    
+    public static User Create(int tenantId, string identityKey, string email)
+    {
+        ArgumentNullException.ThrowIfNull(identityKey);
+
+        return new User
+        {
+            TenantId = tenantId,
+            IdentityKey = identityKey,
+            Email = string.IsNullOrEmpty(email) ? null : email,
+            CreatedAt = DateTime.UtcNow
+        };
+    }
+
+    public void Update(int tenantId, string email)
+    {
+        TenantId = tenantId;
+        Email = string.IsNullOrEmpty(email) ? null : email;
+    }
 }

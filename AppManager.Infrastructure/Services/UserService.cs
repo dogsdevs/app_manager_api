@@ -43,6 +43,7 @@ public class UserService : IUserService
         var users = _users.Where(x =>
             string.IsNullOrWhiteSpace(query)
             || EF.Functions.Like(x.IdentityKey, $"%{query}%")
+            || EF.Functions.Like(x.Email.ToUpper(), $"%{query.ToUpper()}%")
         );
 
         return users;

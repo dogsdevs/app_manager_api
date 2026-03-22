@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 namespace AppManager.Controllers;
 [ApiController]
 [Route("api/[controller]")]
-public class RolesController(ILogger<AppManagerController> logger, IRoleService service, ITenantService tenantService)
+public class RolesController(ILogger<RolesController> logger, IRoleService service, ITenantService tenantService)
     : ControllerBase
 {
 
@@ -17,31 +17,38 @@ public class RolesController(ILogger<AppManagerController> logger, IRoleService 
         return Ok(result);
     }
 
-    [HttpGet("{roleId}")]
-    public IActionResult GetRoleById(int roleId)
+    [HttpGet("{id}")]
+    public IActionResult GetRoleById(int id)
     {
-        var result = service.GetById(roleId);
+        var result = service.GetById(id);
         if (result == null)
         {
             return NotFound();
         }
-        var dto = new RoleDto(roleId, result.Name, result.Description, result.GuardName, result.TenantId);
+        var dto = new RoleDto(id, result.Name, result.Description, result.GuardName, result.TenantId);
         return Ok(dto);
     }
 
     [HttpPost]
     public IActionResult AddRole([FromBody] RequestRoleDto data)
     {
+        var existsTenant = tenantService.GetById(data.TenantId);
+
+        if (existsTenant == null)
+        {
+            return BadRequest("El tenant es invalido");
+        }
+        
         var role = Role.Create(data.Name, data.Description, data.GuardName, data.TenantId);
         service.Create(role);
         
         return CreatedAtAction(nameof(GetRoleById), new { roleId = role.Id }, new RoleDto(role.Id, role.Name, role.Description, role.GuardName, role.TenantId));
     }
 
-    [HttpPut("{roleId}")]
-    public IActionResult UpdateRole(int roleId, [FromBody] RequestRoleDto data)
+    [HttpPut("{id}")]
+    public IActionResult UpdateRole(int id, [FromBody] RequestRoleDto data)
     {
-        var role = service.GetById(roleId);
+        var role = service.GetById(id);
         if (role == null)
         {
             return NotFound();
@@ -54,17 +61,17 @@ public class RolesController(ILogger<AppManagerController> logger, IRoleService 
             return BadRequest("El tenant es invalido");
         }
         
-        role.Update(roleId, data.Name, data.Description, data.GuardName, data.TenantId);
+        role.Update(id, data.Name, data.Description, data.GuardName, data.TenantId);
         
         service.Update(role);
         var roleDto = new RoleDto(role.Id, role.Name, role.Description, role.GuardName, role.TenantId);
         return Ok(roleDto);
     }
 
-    [HttpDelete("{roleId}")]
-    public IActionResult UpdateRole(int roleId)
+    [HttpDelete("{id}")]
+    public IActionResult UpdateRole(int id)
     {
-        var role = service.GetById(roleId);
+        var role = service.GetById(id);
         if (role == null)
         {
             return NotFound();
