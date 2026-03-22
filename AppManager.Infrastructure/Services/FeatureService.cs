@@ -42,10 +42,10 @@ public class FeatureService : IFeatureService
     {
         var features = _features.Where(x =>
             string.IsNullOrWhiteSpace(query)
-            || EF.Functions.Like(x.Name, $"%{query}%")
-            || EF.Functions.Like(x.Key, $"%{query}%")
-            || EF.Functions.Like(x.MenuIcon, $"%{query}%")
-            || EF.Functions.Like(x.MenuPath, $"%{query}%")
+            || EF.Functions.Like(x.Name.ToUpper(), $"%{query.ToUpper()}%")
+            || EF.Functions.Like(x.Key.ToUpper(), $"%{query.ToUpper()}%")
+            || EF.Functions.Like(x.MenuIcon.ToUpper(), $"%{query.ToUpper()}%")
+            || EF.Functions.Like(x.MenuPath.ToUpper(), $"%{query.ToUpper()}%")
         ).OrderBy(x => x.MenuOrder);
 
         return features;

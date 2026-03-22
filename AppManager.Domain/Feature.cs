@@ -20,6 +20,27 @@ public class Feature
     {
     }
 
+
+    public static Feature CreateFeature(string name, string key, string menuLabel, string menuPath, string menuIcon,
+        int menuOrder, bool showInMenu, int? parentId)
+    {
+        ArgumentNullException.ThrowIfNull(name);
+        ArgumentNullException.ThrowIfNull(key);
+
+        return new Feature
+        {
+            Name = name,
+            Key = key,
+            ParentId = parentId,
+            ShowInMenu = showInMenu,
+            MenuLabel = menuLabel,
+            MenuPath = menuPath,
+            MenuIcon = menuIcon,
+            MenuOrder = menuOrder,
+            IsActive = true
+        };
+    }
+
     public static Feature CreateFeature(string name, string key, int? parentId = null, bool isActive = true)
     {
         ArgumentNullException.ThrowIfNull(name);
@@ -56,6 +77,20 @@ public class Feature
             MenuOrder = order,
             IsActive = isActive
         };
+    }
+
+    public void Update(string name, string key, string menuLabel, string menuPath, string menuIcon,
+        int menuOrder, bool showInMenu, int? parentId, bool isActive)
+    {
+        Name = name;
+        Key = key;
+        ParentId = parentId;
+        ShowInMenu = showInMenu;
+        MenuLabel = menuLabel;
+        MenuPath = menuPath;
+        MenuIcon = menuIcon;
+        MenuOrder = menuOrder;
+        IsActive = isActive;
     }
 
     public void AddParentId(int parentId)
