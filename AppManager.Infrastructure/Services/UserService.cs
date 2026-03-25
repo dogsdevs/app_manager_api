@@ -48,4 +48,18 @@ public class UserService : IUserService
 
         return users;
     }
+
+    public IEnumerable<User> GetAll(string query, bool? isActive)
+    {
+        var users = _users.Where(x =>
+            (isActive == null || x.IsActive == isActive) &&
+            (
+                string.IsNullOrWhiteSpace(query)
+                || EF.Functions.Like(x.IdentityKey, $"%{query}%")
+                || EF.Functions.Like(x.Email.ToUpper(), $"%{query.ToUpper()}%")
+            )
+        );
+
+        return users;
+    }
 }

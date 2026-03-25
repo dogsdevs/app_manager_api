@@ -12,9 +12,10 @@ public class UsersController(ILogger<UsersController> logger, IUserService servi
 {
 
     [HttpGet]
-    public IActionResult Get(string query = "")
+    public IActionResult Get(string query = "", bool? isActive = null)
     {
-        var users = service.GetAll(query).Select(x => new UserDto(x.Id, x.TenantId, x.IdentityKey, x.Email));
+        var users = service.GetAll(query, isActive)
+            .Select(x => new UserDto(x.Id, x.TenantId, x.IdentityKey, x.Email, x.IsActive));
         
         return Ok(users);
     }
@@ -29,7 +30,7 @@ public class UsersController(ILogger<UsersController> logger, IUserService servi
             return NotFound();
         }
         
-        var  userDto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email);
+        var  userDto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email, user.IsActive);
         
         return Ok(userDto);
     }
@@ -52,7 +53,7 @@ public class UsersController(ILogger<UsersController> logger, IUserService servi
         var user = AppManager.Domain.User.Create(userDto.TenantId, userDto.IdentityKey, userDto.Email);
         service.Create(user);
         
-        var dto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email);
+        var dto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email, user.IsActive);
         
         return CreatedAtAction(nameof(GetById), new { id = user.Id }, dto);
     }
@@ -74,10 +75,10 @@ public class UsersController(ILogger<UsersController> logger, IUserService servi
             return BadRequest("El tenant es invalido");
         }
         
-        user.Update(userDto.TenantId, userDto.Email);
+        user.Update(userDto.TenantId, userDto.Email, userDto.IsActive);
         
         service.Update(user);
-        var dto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email);
+        var dto = new UserDto(user.Id, user.TenantId, user.IdentityKey, user.Email, user.IsActive);
         return Ok(dto);
     }
 
@@ -98,6 +99,6 @@ public class UsersController(ILogger<UsersController> logger, IUserService servi
     
 }
 
-public record UserDto (int Id, int TenantId, string IdentityKey, string Email);
+public record UserDto (int Id, int TenantId, string IdentityKey, string Email, bool IsActive);
 public record RequestUserDto (int TenantId, string IdentityKey, string Email);
-public record UpdateUserDto (int TenantId, string Email);
+public record UpdateUserDto (int TenantId, string Email, bool IsActive);

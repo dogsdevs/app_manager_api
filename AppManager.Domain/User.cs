@@ -25,7 +25,8 @@ public class User
         {
             IdentityKey = identityKey,
             Email = string.IsNullOrEmpty(email) ? null : email,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
         };
     }
     
@@ -38,13 +39,15 @@ public class User
             TenantId = tenantId,
             IdentityKey = identityKey,
             Email = string.IsNullOrEmpty(email) ? null : email,
-            CreatedAt = DateTime.UtcNow
+            CreatedAt = DateTime.UtcNow,
+            IsActive = true
         };
     }
 
-    public void Update(int tenantId, string email)
+    public void Update(int tenantId, string email, bool isActive)
     {
         TenantId = tenantId;
         Email = string.IsNullOrEmpty(email) ? null : email;
+        IsActive = isActive;
     }
 }
