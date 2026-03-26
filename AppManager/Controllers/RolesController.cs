@@ -42,7 +42,7 @@ public class RolesController(ILogger<RolesController> logger, IRoleService servi
         var role = Role.Create(data.Name, data.Description, data.GuardName, data.TenantId);
         service.Create(role);
         
-        return CreatedAtAction(nameof(GetRoleById), new { roleId = role.Id }, new RoleDto(role.Id, role.Name, role.Description, role.GuardName, role.TenantId));
+        return CreatedAtAction(nameof(GetRoleById), new { id = role.Id }, new RoleDto(role.Id, role.Name, role.Description, role.GuardName, role.TenantId));
     }
 
     [HttpPut("{id}")]
