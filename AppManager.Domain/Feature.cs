@@ -22,7 +22,7 @@ public class Feature
 
 
     public static Feature CreateFeature(string name, string key, string menuLabel, string menuPath, string menuIcon,
-        int menuOrder, bool showInMenu, int? parentId)
+        int menuOrder, bool showInMenu, int? parentId, bool isActive = false)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(key);
@@ -37,11 +37,11 @@ public class Feature
             MenuPath = menuPath,
             MenuIcon = menuIcon,
             MenuOrder = menuOrder,
-            IsActive = true
+            IsActive = isActive
         };
     }
 
-    public static Feature CreateFeature(string name, string key, int? parentId = null, bool isActive = true)
+    public static Feature CreateFeature(string name, string key, int? parentId = null, bool isActive = false)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(key);
@@ -61,7 +61,7 @@ public class Feature
     }
 
     public static Feature CreateMenu(string name, string key,  string? label, string? path, string? icon,
-        int order = 1, bool isActive = true)
+        int order = 1, bool isActive = false)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(key);

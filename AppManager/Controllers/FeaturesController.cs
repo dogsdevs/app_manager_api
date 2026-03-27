@@ -12,9 +12,10 @@ public class FeaturesController(ILogger<FeaturesController> logger, IFeatureServ
 {
 
     [HttpGet]
-    public IActionResult GetAll(string query = "")
+    public IActionResult GetAll(string query = "", bool? isActive = null)
     {
-        var features = service.GetAll(query).Select(x => new FeatureDto(x.Id, x.Name, x.Key, x.MenuLabel, x.MenuPath, x.MenuIcon, x.MenuOrder, x.ShowInMenu, x.ParentId));
+        var features = service.GetAll(query, isActive)
+            .Select(x => new FeatureDto(x.Id, x.Name, x.Key, x.MenuLabel, x.MenuPath, x.MenuIcon, x.MenuOrder, x.ShowInMenu, x.ParentId, x.IsActive));
         
         return Ok(features);
     }
@@ -30,18 +31,18 @@ public class FeaturesController(ILogger<FeaturesController> logger, IFeatureServ
         }
 
         var dto = new FeatureDto(id, feature.Name, feature.Key, feature.MenuLabel, feature.MenuPath, feature.MenuIcon,
-            feature.MenuOrder, feature.ShowInMenu, feature.ParentId);
+            feature.MenuOrder, feature.ShowInMenu, feature.ParentId, feature.IsActive);
         
         return Ok(dto);
     }
 
-    [HttpPost("")]
+    [HttpPost]
     public IActionResult CreateFeature([FromBody] CreateFeatureDto dto)
     {
-        var feature = Feature.CreateFeature(dto.Name, dto.Key,  dto.MenuLabel, dto.MenuPath, dto.MenuIcon, dto.MenuOrder, dto.ShowInMenu, dto.ParentId);
+        var feature = Feature.CreateFeature(dto.Name, dto.Key,  dto.MenuLabel, dto.MenuPath, dto.MenuIcon, dto.MenuOrder, dto.ShowInMenu, dto.ParentId, dto.IsActive);
         
         service.Create(feature);
-        var featureDto = new FeatureDto(feature.Id, feature.Name, feature.Key, feature.MenuLabel, feature.MenuPath, feature.MenuIcon, feature.MenuOrder, feature.ShowInMenu, feature.ParentId);
+        var featureDto = new FeatureDto(feature.Id, feature.Name, feature.Key, feature.MenuLabel, feature.MenuPath, feature.MenuIcon, feature.MenuOrder, feature.ShowInMenu, feature.ParentId, feature.IsActive);
         return CreatedAtAction(nameof(GetById), new { id = featureDto.Id }, featureDto);
     }
     
@@ -78,6 +79,6 @@ public class FeaturesController(ILogger<FeaturesController> logger, IFeatureServ
     
 }
 
-public record CreateFeatureDto(string Name, string Key, string MenuLabel, string MenuPath, string MenuIcon, int MenuOrder, bool ShowInMenu, int? ParentId );
+public record CreateFeatureDto(string Name, string Key, string MenuLabel, string MenuPath, string MenuIcon, int MenuOrder, bool ShowInMenu, int? ParentId, bool IsActive );
 public record UpdateFeatureDto(string Name, string Key, string MenuLabel, string MenuPath, string MenuIcon, int MenuOrder, bool ShowInMenu, int? ParentId, bool IsActive );
-public record FeatureDto(int Id, string Name, string Key, string MenuLabel, string MenuPath, string MenuIcon, int MenuOrder, bool ShowInMenu, int? ParentId );
+public record FeatureDto(int Id, string Name, string Key, string MenuLabel, string MenuPath, string MenuIcon, int MenuOrder, bool ShowInMenu, int? ParentId, bool IsActive );

@@ -37,6 +37,22 @@ public class FeatureService : IFeatureService
     {
         return _features.Find(id);
     }
+    
+    public IEnumerable<Feature> GetAll(string query, bool? isActive)
+    {
+        var features = _features.Where(x =>
+            (isActive == null || x.IsActive == isActive) && 
+            (
+                string.IsNullOrWhiteSpace(query)
+                || EF.Functions.Like(x.Name.ToUpper(), $"%{query.ToUpper()}%")
+                || EF.Functions.Like(x.Key.ToUpper(), $"%{query.ToUpper()}%")
+                || EF.Functions.Like(x.MenuIcon.ToUpper(), $"%{query.ToUpper()}%")
+                || EF.Functions.Like(x.MenuPath.ToUpper(), $"%{query.ToUpper()}%")
+            )
+        ).OrderBy(x => x.MenuOrder);
+
+        return features;
+    }
 
     public IEnumerable<Feature> GetAll(string query)
     {
