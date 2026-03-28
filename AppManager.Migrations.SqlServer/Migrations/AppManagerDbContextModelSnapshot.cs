@@ -342,7 +342,7 @@ namespace AppManager.Migrations.SqlServer.Migrations
                     b.HasOne("AppManager.Domain.Feature", "Feature")
                         .WithMany("Permissions")
                         .HasForeignKey("FeatureId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Feature");

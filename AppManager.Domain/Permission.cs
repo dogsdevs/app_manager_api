@@ -20,12 +20,43 @@ public class Permission
     {
     }
 
-    public static Permission Create(int featureId, string action)
+    public static Permission Create(int? id, int? featureId, string name, string guardName, string action,
+        string description)
     {
         return new Permission
         {
-            FeatureId = featureId,
-            Action = action
+            Id = id ?? 0,
+            FeatureId = featureId ?? 0,
+            Action = action,
+            Name = name,
+            GuardName = guardName,
+            Description = description,
+            Feature = null
         };
+    }
+
+
+    public void Update(string name, string description, string guardName, string action)
+    {
+        Name = name;
+        Description = description;
+        GuardName = guardName;
+        Action = action;
+    }
+    
+    
+    protected bool Equals(Permission other)
+    {
+        return Id == other.Id;
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is Permission other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
     }
 }

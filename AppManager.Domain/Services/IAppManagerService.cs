@@ -8,7 +8,7 @@ public interface IAppManagerService
 
     // Users
     User RegisterUser(string identityKey, string email);
-    void AddUserPermission(string identityKey, int featureId, string action);
+    // void AddUserPermission(string identityKey, int featureId, string action);
 
     // Features
     Feature AddFeature(Feature feature);

@@ -3,6 +3,7 @@ using System;
 using AppManager.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace AppManager.Migrations.Postgresql.Migrations
 {
     [DbContext(typeof(AppManagerDbContext))]
-    partial class AppManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260328173111_FeaturesAndPermissionRelationship")]
+    partial class FeaturesAndPermissionRelationship
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

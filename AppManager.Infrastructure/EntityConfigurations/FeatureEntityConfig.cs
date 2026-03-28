@@ -25,5 +25,10 @@ public class FeatureEntityConfig : IEntityTypeConfiguration<Feature>
 
         builder.HasOne(x => x.Parent);
         builder.HasMany(x => x.Permissions);
+        
+        builder.HasMany(x => x.Permissions)
+            .WithOne(x => x.Feature)
+            .HasForeignKey(x => x.FeatureId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

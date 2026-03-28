@@ -15,10 +15,5 @@ public class PermissionEntityConfig : IEntityTypeConfiguration<Permission>
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
         builder.Property(x => x.Action).HasMaxLength(100);
-
-        builder.HasOne(x => x.Feature)
-            .WithMany(x => x.Permissions)
-            .HasForeignKey(f => f.FeatureId)
-            .OnDelete(DeleteBehavior.Restrict);
     }
 }

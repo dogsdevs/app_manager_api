@@ -83,24 +83,24 @@ public class AppManagerService : IAppManagerService
         return user;
     }
 
-    public void AddUserPermission(string identityKey, int featureId, string action)
-    {
-        ArgumentNullException.ThrowIfNull(identityKey);
-
-        var user = _context.Users.FirstOrDefault(x => x.IdentityKey == identityKey);
-
-        if (user == null) throw new Exception($"User with identityKey {identityKey} not found");
-
-        var feature = _context.Features.FirstOrDefault(x => x.Id == featureId);
-        if (feature == null) throw new Exception($"Feature with id {featureId} not found");
-
-        var permission = Permission.Create(feature.Id, action);
-        var userPermission = UserPermission.Create(user.Id, permission.Id);
-
-        _context.Permissions.Add(permission);
-        _context.UserPermissions.Add(userPermission);
-        _context.SaveChanges();
-    }
+    // public void AddUserPermission(string identityKey, int featureId, string action)
+    // {
+    //     ArgumentNullException.ThrowIfNull(identityKey);
+    //
+    //     var user = _context.Users.FirstOrDefault(x => x.IdentityKey == identityKey);
+    //
+    //     if (user == null) throw new Exception($"User with identityKey {identityKey} not found");
+    //
+    //     var feature = _context.Features.FirstOrDefault(x => x.Id == featureId);
+    //     if (feature == null) throw new Exception($"Feature with id {featureId} not found");
+    //
+    //     var permission = Permission.Create(feature.Id, action);
+    //     var userPermission = UserPermission.Create(user.Id, permission.Id);
+    //
+    //     _context.Permissions.Add(permission);
+    //     _context.UserPermissions.Add(userPermission);
+    //     _context.SaveChanges();
+    // }
 
 
     public Feature AddFeature(Feature feature)

@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace AppManager.Domain;
 
 public class Feature
@@ -22,7 +24,7 @@ public class Feature
 
 
     public static Feature CreateFeature(string name, string key, string menuLabel, string menuPath, string menuIcon,
-        int menuOrder, bool showInMenu, int? parentId, bool isActive = false)
+        int menuOrder, bool showInMenu, int? parentId, bool isActive)
     {
         ArgumentNullException.ThrowIfNull(name);
         ArgumentNullException.ThrowIfNull(key);
@@ -31,7 +33,8 @@ public class Feature
         {
             Name = name,
             Key = key,
-            ParentId = parentId,
+            ParentId = parentId == 0 ? null : parentId,
+            Parent = null,
             ShowInMenu = showInMenu,
             MenuLabel = menuLabel,
             MenuPath = menuPath,
@@ -39,6 +42,7 @@ public class Feature
             MenuOrder = menuOrder,
             IsActive = isActive
         };
+        
     }
 
     public static Feature CreateFeature(string name, string key, int? parentId = null, bool isActive = false)
@@ -50,7 +54,8 @@ public class Feature
         {
             Name = name,
             Key = key,
-            ParentId = parentId,
+            ParentId = parentId == 0 ? null : parentId,
+            Parent = null,
             ShowInMenu = false,
             MenuLabel = null,
             MenuPath = null,
@@ -80,21 +85,68 @@ public class Feature
     }
 
     public void Update(string name, string key, string menuLabel, string menuPath, string menuIcon,
-        int menuOrder, bool showInMenu, int? parentId, bool isActive)
+        int menuOrder, bool showInMenu, int? parentId, bool isActive, Permission[] permissions)
     {
         Name = name;
         Key = key;
-        ParentId = parentId;
+        ParentId = parentId == 0 ? null : parentId;
+        Parent = null;
         ShowInMenu = showInMenu;
         MenuLabel = menuLabel;
         MenuPath = menuPath;
         MenuIcon = menuIcon;
         MenuOrder = menuOrder;
         IsActive = isActive;
+
+        if (permissions.Length > 0)
+        {
+            ManagePermission(permissions);
+        }
     }
 
     public void AddParentId(int parentId)
     {
-        ParentId = parentId;
+        ParentId = parentId == 0 ? null : parentId;
+    }
+
+    private void CheckDuplicatePermission(Permission permission)
+    {
+        if (Permissions.Any(x => x.GuardName == permission.GuardName))
+        {
+            throw new ValidationException($"Ya existe un permiso del tipo: {permission.GuardName}"); 
+        }
+    }
+    
+    public void ManagePermission(Permission[] permissions)
+    {
+        var existingById = Permissions.ToDictionary(p => p.Id);
+        var incomingIds = new HashSet<int>();
+
+        foreach (var incoming in permissions)
+        {
+            if (incoming.Id == 0)
+            {
+                CheckDuplicatePermission(incoming);
+                Permissions.Add(incoming);
+                continue;
+            }
+
+            incomingIds.Add(incoming.Id);
+
+            if (existingById.TryGetValue(incoming.Id, out var existing))
+            {
+                if (!existing.Equals(incoming))
+                {
+                    CheckDuplicatePermission(incoming);
+                    existing.Update(incoming.Name,incoming.Description, incoming.GuardName, incoming.Action);
+                }
+            }
+            else
+            {
+                Permissions.Add(incoming);
+            }
+        }
+
+        Permissions.RemoveWhere(p => p.Id != 0 && !incomingIds.Contains(p.Id));
     }
 }

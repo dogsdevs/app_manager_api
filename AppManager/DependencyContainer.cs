@@ -14,5 +14,6 @@ public static class DependencyContainer
         services.AddTransient<IFeatureService, FeatureService>();
         services.AddTransient<IAppManagerService, AppManagerService>();
         services.AddTransient<ITenantService, TenantService>();
+        services.AddTransient<IPermissionsService, PermissionsService>();
     }
 }
