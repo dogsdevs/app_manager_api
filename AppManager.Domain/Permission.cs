@@ -49,6 +49,14 @@ public class Permission
     {
         return Id == other.Id;
     }
+    
+    public bool HasChanges(Permission other)
+    {
+        return Name != other.Name ||
+               GuardName != other.GuardName ||
+               Action != other.Action ||
+               Description != other.Description;
+    }
 
     public override bool Equals(object? obj)
     {

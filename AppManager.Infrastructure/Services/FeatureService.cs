@@ -32,7 +32,7 @@ public class FeatureService : IFeatureService
 
     private void CheckDuplicates(Feature feature)
     {
-        if (feature.Id > 0 && _features.Any(x => x.Id != feature.Id && x.Key == feature.Key) || _features.Any(x =>  x.Key == feature.Key))
+        if (_features.Any(x => x.Id != feature.Id && x.Key == feature.Key))
         {
             throw new ValidationException($"Ya existe un feature con key: {feature.Key}"); 
         }

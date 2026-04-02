@@ -110,7 +110,7 @@ public class FeaturesController(
             }
 
             var permissions = request.Permissions.Select(x =>
-                    Permission.Create(x.Id, id, x.GuardName, $"{request.Key}.{x.Action}", x.Action, x.Description))
+                    Permission.Create(x.Id, id, x.Name, $"{request.Key}.{x.Action}", x.Action, x.Description))
                 .ToArray();
 
             feature.Update(request.Name,

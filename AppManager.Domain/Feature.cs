@@ -111,9 +111,11 @@ public class Feature
 
     private void CheckDuplicatePermission(Permission permission)
     {
-        if (Permissions.Any(x => x.GuardName == permission.GuardName))
+        if (Permissions.Any(x => 
+                x.Id != permission.Id && 
+                x.GuardName == permission.GuardName))
         {
-            throw new ValidationException($"Ya existe un permiso del tipo: {permission.GuardName}"); 
+            throw new ValidationException($"Ya existe un permiso del tipo: {permission.GuardName}");
         }
     }
     
@@ -121,6 +123,17 @@ public class Feature
     {
         var existingById = Permissions.ToDictionary(p => p.Id);
         var incomingIds = new HashSet<int>();
+        
+        var duplicatedIncoming = permissions
+            .GroupBy(p => p.GuardName)
+            .Where(g => g.Count() > 1)
+            .Select(g => g.Key)
+            .ToList();
+
+        if (duplicatedIncoming.Any())
+        {
+            throw new ValidationException($"Permisos duplicados en la solicitud: {string.Join(", ", duplicatedIncoming)}");
+        }
 
         foreach (var incoming in permissions)
         {
@@ -135,9 +148,13 @@ public class Feature
 
             if (existingById.TryGetValue(incoming.Id, out var existing))
             {
-                if (!existing.Equals(incoming))
+                if (existing.HasChanges(incoming))
                 {
-                    CheckDuplicatePermission(incoming);
+                    if (Permissions.Any(x =>x.Id != incoming.Id && x.GuardName == incoming.GuardName))
+                    {
+                        throw new ValidationException($"Ya existe un permiso del tipo: {incoming.GuardName}");
+                    }
+                    
                     existing.Update(incoming.Name,incoming.Description, incoming.GuardName, incoming.Action);
                 }
             }
